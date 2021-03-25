@@ -1,29 +1,27 @@
 package cli
 
 import (
+	"context"
 	"fmt"
-	"io/ioutil"
 	"log"
-	"net/http"
+
+	"github.com/google/go-github/v33/github"
+	"golang.org/x/oauth2"
 )
 
 func Exec() {
 	ParseParameters()
 
-	url := apiHost + "/repos/" + params.RepositoryOwner + "/" + params.RepositoryName + "/pulls?state=closed"
-	req, err := http.NewRequest("GET", url, nil)
-	req.Header.Set("Accept", "application/vnd.github.v3+json")
-	req.Header.Set("Authorization", fmt.Sprintf("token %s", params.GitHubAPIToken))
+	ctx := context.Background()
+	ts := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: params.GitHubAPIToken})
+	tc := oauth2.NewClient(ctx, ts)
+	client := github.NewClient(tc)
 
-	resp, err := http.DefaultClient.Do(req)
-	if err != nil {
-		log.Fatalf("Failed to fetch pull requests: %v", err.Error())
-	}
-	defer resp.Body.Close()
-
-	bodyBytes, err := ioutil.ReadAll(resp.Body)
+	pulls, _, err := client.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
+		State: "closed",
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Println(string(bodyBytes))
+	fmt.Printf("Successfully created new repo: %v\n", pulls)
 }
