@@ -19,7 +19,10 @@ func Exec() {
 	githubClient := github.NewClient(httpClient)
 
 	pulls, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
-		State: "closed",
+		Base:      params.DevelopmentBranchName,
+		State:     "closed",
+		Sort:      "updated",
+		Direction: "desc",
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -34,5 +37,6 @@ func Exec() {
 			continue
 		}
 		fmt.Println(pull.GetMergedAt())
+		fmt.Println()
 	}
 }
