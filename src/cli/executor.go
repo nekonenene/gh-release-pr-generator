@@ -4,7 +4,6 @@ import (
 	"context"
 	"fmt"
 	"log"
-	"time"
 
 	"github.com/google/go-github/v33/github"
 	"golang.org/x/oauth2"
@@ -18,11 +17,31 @@ func Exec() {
 	httpClient := oauth2.NewClient(ctx, tokenSource)
 	githubClient := github.NewClient(httpClient)
 
+	// main ブランチと develop ブランチの差分を出す
+	comparison, _, err := githubClient.Repositories.CompareCommits(
+		ctx,
+		params.RepositoryOwner,
+		params.RepositoryName,
+		params.ProductionBranchName,
+		params.DevelopmentBranchName,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var diffCommitIDs []string
+	for _, commit := range comparison.Commits {
+		diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
+	}
+
 	pulls, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
 		Base:      params.DevelopmentBranchName,
 		State:     "closed",
 		Sort:      "updated",
 		Direction: "desc",
+		ListOptions: github.ListOptions{
+			PerPage: 100,
+		},
 	})
 	if err != nil {
 		log.Fatal(err)
@@ -33,10 +52,12 @@ func Exec() {
 		fmt.Println(pull.GetUser().GetLogin())
 
 		// マージされずに閉じられたものはスキップ
-		if (pull.GetMergedAt() == time.Time{}) {
+		if pull.GetMergedAt().IsZero() {
+			fmt.Print("Not Merged!\n\n")
 			continue
 		}
 		fmt.Println(pull.GetMergedAt())
+		fmt.Println(pull.GetMergeCommitSHA())
 		fmt.Println()
 	}
 }
