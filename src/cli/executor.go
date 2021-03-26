@@ -53,12 +53,16 @@ func Exec() {
 
 	fmt.Println(pullRequestBody)
 
-	newPullRequest, err := createOrUpdatePullRequest(pullRequestTitle, pullRequestBody)
+	releasePullRequest, isCreated, err := createOrUpdatePullRequest(pullRequestTitle, pullRequestBody)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	fmt.Printf("Created %s", newPullRequest.GetURL())
+	if isCreated {
+		fmt.Printf("Created %s\n", releasePullRequest.GetHTMLURL())
+	} else {
+		fmt.Printf("Updated %s\n", releasePullRequest.GetHTMLURL())
+	}
 }
 
 // Fetch the difference of commit IDs between develop and main
@@ -127,8 +131,9 @@ func fetchPullRequests(limit int) ([]*github.PullRequest, error) {
 }
 
 // If the release pull request does not exist, create a new one, otherwise edit the title and body
-func createOrUpdatePullRequest(title string, body string) (*github.PullRequest, error) {
+func createOrUpdatePullRequest(title string, body string) (*github.PullRequest, bool, error) {
 	var pullRequest *github.PullRequest
+	isCreated := false
 
 	releasePullRequests, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
 		Head:  params.DevelopmentBranchName,
@@ -136,15 +141,16 @@ func createOrUpdatePullRequest(title string, body string) (*github.PullRequest, 
 		State: "open",
 	})
 	if err != nil {
-		return pullRequest, err
+		return pullRequest, isCreated, err
 	}
 
 	if len(releasePullRequests) == 0 {
 		pullRequest, err = createPullRequest(title, body)
+		isCreated = true
 	} else {
 		pullRequest, err = updatePullRequest(title, body, releasePullRequests[0].GetNumber())
 	}
-	return pullRequest, err
+	return pullRequest, isCreated, err
 }
 
 func createPullRequest(title string, body string) (*github.PullRequest, error) {
