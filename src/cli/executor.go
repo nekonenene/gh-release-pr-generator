@@ -42,11 +42,11 @@ func Exec() {
 	fmt.Println(len(pulls))
 
 	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02"))
-	pullRequestBody := ""
+	pullRequestBody := "# Pull Requests\n\n"
 	for _, commitID := range diffCommitIDs {
 		for _, pull := range pulls {
 			if commitID == pull.GetMergeCommitSHA() {
-				pullRequestBody += fmt.Sprintf("* [ ] %s (#%d) @%s\n", pull.GetTitle(), pull.GetNumber(), pull.GetUser().GetLogin())
+				pullRequestBody += fmt.Sprintf("* %s (#%d) @%s\n", pull.GetTitle(), pull.GetNumber(), pull.GetUser().GetLogin())
 			}
 		}
 	}
