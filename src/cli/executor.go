@@ -27,11 +27,17 @@ func Exec() {
 	ParseParameters()
 	initContextAndClient()
 
-	diffCommitIDs := fetchDiffCommitIDs()
+	diffCommitIDs, err := fetchDiffCommitIDs()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(diffCommitIDs)
 
-	pulls := fetchPullRequests(FetchPullRequestsLimitDefault)
+	pulls, err := fetchPullRequests(FetchPullRequestsLimitDefault)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	fmt.Println(len(pulls))
 
@@ -47,7 +53,7 @@ func Exec() {
 
 	fmt.Println(pullRequestBody)
 
-	newPullRequest, err := createPullRequest(pullRequestTitle, pullRequestBody)
+	newPullRequest, err := createOrUpdatePullRequest(pullRequestTitle, pullRequestBody)
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -56,7 +62,9 @@ func Exec() {
 }
 
 // Fetch the difference of commit IDs between develop and main
-func fetchDiffCommitIDs() []string {
+func fetchDiffCommitIDs() ([]string, error) {
+	var diffCommitIDs []string
+
 	comparison, _, err := githubClient.Repositories.CompareCommits(
 		ctx,
 		params.RepositoryOwner,
@@ -65,19 +73,18 @@ func fetchDiffCommitIDs() []string {
 		params.DevelopmentBranchName,
 	)
 	if err != nil {
-		log.Fatal(err)
+		return diffCommitIDs, err
 	}
 
-	var diffCommitIDs []string
 	for _, commit := range comparison.Commits {
 		diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
 	}
 
-	return diffCommitIDs
+	return diffCommitIDs, nil
 }
 
 // Fetch up to `limit` pull requests sorted by updated desc
-func fetchPullRequests(limit int) []*github.PullRequest {
+func fetchPullRequests(limit int) ([]*github.PullRequest, error) {
 	var pullRequestsList []*github.PullRequest
 	pageNum := FirstPageNumberOfGitHubAPI
 
@@ -100,7 +107,7 @@ func fetchPullRequests(limit int) []*github.PullRequest {
 			ListOptions: listOptions,
 		})
 		if err != nil {
-			log.Fatal(err)
+			return pullRequestsList, err
 		}
 
 		pullRequestsList = append(pullRequestsList, pulls...)
@@ -116,16 +123,46 @@ func fetchPullRequests(limit int) []*github.PullRequest {
 		}
 	}
 
-	return pullRequestsList
+	return pullRequestsList, nil
+}
+
+// If the release pull request does not exist, create a new one, otherwise edit the title and body
+func createOrUpdatePullRequest(title string, body string) (*github.PullRequest, error) {
+	var pullRequest *github.PullRequest
+
+	releasePullRequests, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
+		Head:  params.DevelopmentBranchName,
+		Base:  params.ProductionBranchName,
+		State: "open",
+	})
+	if err != nil {
+		return pullRequest, err
+	}
+
+	if len(releasePullRequests) < 0 {
+		pullRequest, err = createPullRequest(title, body)
+	} else {
+		pullRequest, err = updatePullRequest(title, body, releasePullRequests[0].GetNumber())
+	}
+	return pullRequest, err
 }
 
 func createPullRequest(title string, body string) (*github.PullRequest, error) {
 	newPullRequest, _, err := githubClient.PullRequests.Create(ctx, params.RepositoryOwner, params.RepositoryName, &github.NewPullRequest{
 		Title: &title,
 		Body:  &body,
-		Base:  &params.DevelopmentBranchName,
-		Head:  &params.ProductionBranchName,
+		Head:  &params.DevelopmentBranchName,
+		Base:  &params.ProductionBranchName,
 	})
 
 	return newPullRequest, err
+}
+
+func updatePullRequest(title string, body string, pullReqNumber int) (*github.PullRequest, error) {
+	pullRequest, _, err := githubClient.PullRequests.Edit(ctx, params.RepositoryOwner, params.RepositoryName, pullReqNumber, &github.PullRequest{
+		Title: &title,
+		Body:  &body,
+	})
+
+	return pullRequest, err
 }
