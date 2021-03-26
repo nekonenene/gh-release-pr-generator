@@ -9,30 +9,27 @@ import (
 	"golang.org/x/oauth2"
 )
 
+var (
+	ctx          context.Context
+	githubClient *github.Client
+)
+
+// init ctx and githubClient
+func initClient() {
+	ctx = context.Background()
+	tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: params.GitHubAPIToken})
+	httpClient := oauth2.NewClient(ctx, tokenSource)
+	githubClient = github.NewClient(httpClient)
+}
+
 func Exec() {
 	ParseParameters()
 
-	ctx := context.Background()
-	tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: params.GitHubAPIToken})
-	httpClient := oauth2.NewClient(ctx, tokenSource)
-	githubClient := github.NewClient(httpClient)
+	initClient()
 
-	// Fetch the difference of commit IDs between develop and main
-	comparison, _, err := githubClient.Repositories.CompareCommits(
-		ctx,
-		params.RepositoryOwner,
-		params.RepositoryName,
-		params.ProductionBranchName,
-		params.DevelopmentBranchName,
-	)
-	if err != nil {
-		log.Fatal(err)
-	}
+	diffCommitIDs := fetchDiffCommitIDs()
 
-	var diffCommitIDs []string
-	for _, commit := range comparison.Commits {
-		diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
-	}
+	fmt.Println(diffCommitIDs)
 
 	pulls, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
 		Base:      params.DevelopmentBranchName,
@@ -60,4 +57,25 @@ func Exec() {
 		fmt.Println(pull.GetMergeCommitSHA())
 		fmt.Println()
 	}
+}
+
+// Fetch the difference of commit IDs between develop and main
+func fetchDiffCommitIDs() []string {
+	comparison, _, err := githubClient.Repositories.CompareCommits(
+		ctx,
+		params.RepositoryOwner,
+		params.RepositoryName,
+		params.ProductionBranchName,
+		params.DevelopmentBranchName,
+	)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	var diffCommitIDs []string
+	for _, commit := range comparison.Commits {
+		diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
+	}
+
+	return diffCommitIDs
 }
