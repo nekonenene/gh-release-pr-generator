@@ -23,6 +23,7 @@ func initContextAndClient() {
 	githubClient = github.NewClient(httpClient)
 }
 
+// ENTRY POINT of this package
 func Exec() {
 	ParseParameters()
 	initContextAndClient()
@@ -32,14 +33,10 @@ func Exec() {
 		log.Fatal(err)
 	}
 
-	fmt.Println(diffCommitIDs)
-
 	pulls, err := fetchPullRequests(FetchPullRequestsLimitDefault)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	fmt.Println(len(pulls))
 
 	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02"))
 	pullRequestBody := "# Pull Requests\n\n"
@@ -51,7 +48,12 @@ func Exec() {
 		}
 	}
 
+	fmt.Println("[Title]")
+	fmt.Println(pullRequestTitle)
+	fmt.Println()
+	fmt.Println("[Body]")
 	fmt.Println(pullRequestBody)
+	fmt.Println()
 
 	releasePullRequest, isCreated, err := createOrUpdatePullRequest(pullRequestTitle, pullRequestBody)
 	if err != nil {
