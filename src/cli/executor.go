@@ -15,7 +15,7 @@ var (
 )
 
 // init ctx and githubClient
-func initClient() {
+func initContextAndClient() {
 	ctx = context.Background()
 	tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: params.GitHubAPIToken})
 	httpClient := oauth2.NewClient(ctx, tokenSource)
@@ -24,8 +24,7 @@ func initClient() {
 
 func Exec() {
 	ParseParameters()
-
-	initClient()
+	initContextAndClient()
 
 	diffCommitIDs := fetchDiffCommitIDs()
 
