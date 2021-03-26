@@ -30,18 +30,9 @@ func Exec() {
 
 	fmt.Println(diffCommitIDs)
 
-	pulls, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
-		Base:      params.DevelopmentBranchName,
-		State:     "closed",
-		Sort:      "updated",
-		Direction: "desc",
-		ListOptions: github.ListOptions{
-			PerPage: 100,
-		},
-	})
-	if err != nil {
-		log.Fatal(err)
-	}
+	pulls := fetchPullRequests(FetchPullRequestsLimitDefault)
+
+	fmt.Println(len(pulls))
 
 	for _, pull := range pulls {
 		fmt.Println(pull.GetTitle())
@@ -77,4 +68,47 @@ func fetchDiffCommitIDs() []string {
 	}
 
 	return diffCommitIDs
+}
+
+// Fetch up to `limit` pull requests sorted by updated desc
+func fetchPullRequests(limit int) []*github.PullRequest {
+	var pullRequestsList []*github.PullRequest
+	pageNum := FirstPageNumberOfGitHubAPI
+
+	for {
+		perPage := PerPageDefault
+		if limit < PerPageDefault {
+			perPage = limit
+		}
+
+		listOptions := github.ListOptions{
+			PerPage: perPage,
+			Page:    pageNum,
+		}
+
+		pulls, resp, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
+			Base:        params.DevelopmentBranchName,
+			State:       "closed",
+			Sort:        "updated",
+			Direction:   "desc",
+			ListOptions: listOptions,
+		})
+		if err != nil {
+			log.Fatal(err)
+		}
+
+		pullRequestsList = append(pullRequestsList, pulls...)
+		limit = limit - len(pulls)
+		if limit == 0 {
+			break
+		}
+
+		if resp.NextPage == 0 {
+			break
+		} else {
+			pageNum = resp.NextPage
+		}
+	}
+
+	return pullRequestsList
 }
