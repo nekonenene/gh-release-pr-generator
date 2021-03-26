@@ -1,4 +1,4 @@
-# GitHub Release PullRequest Creator
+# GitHub Release PullRequest Generator
 
 This CLI app supports you to create a **release pull request**.
 
@@ -6,5 +6,5 @@ This CLI app supports you to create a **release pull request**.
 ## Build
 
 ```sh
-go build -o bin/gh-release-pr-creator
+go build -o bin/gh-release-pr-generator
 ```
