@@ -139,7 +139,7 @@ func createOrUpdatePullRequest(title string, body string) (*github.PullRequest, 
 		return pullRequest, err
 	}
 
-	if len(releasePullRequests) < 0 {
+	if len(releasePullRequests) == 0 {
 		pullRequest, err = createPullRequest(title, body)
 	} else {
 		pullRequest, err = updatePullRequest(title, body, releasePullRequests[0].GetNumber())
