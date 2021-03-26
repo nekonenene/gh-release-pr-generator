@@ -1,4 +1,4 @@
-module github.com/nekonenene/github-release-pr
+module github.com/nekonenene/github-release-pr-creator
 
 go 1.16
 
