@@ -17,7 +17,7 @@ func Exec() {
 	httpClient := oauth2.NewClient(ctx, tokenSource)
 	githubClient := github.NewClient(httpClient)
 
-	// main ブランチと develop ブランチの差分を出す
+	// Fetch the difference of commit IDs between develop and main
 	comparison, _, err := githubClient.Repositories.CompareCommits(
 		ctx,
 		params.RepositoryOwner,
@@ -51,7 +51,7 @@ func Exec() {
 		fmt.Println(pull.GetTitle())
 		fmt.Println(pull.GetUser().GetLogin())
 
-		// マージされずに閉じられたものはスキップ
+		// Skip not merged pull requests
 		if pull.GetMergedAt().IsZero() {
 			fmt.Print("Not Merged!\n\n")
 			continue
