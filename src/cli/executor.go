@@ -4,6 +4,7 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"time"
 
 	"github.com/google/go-github/v34/github"
 	"golang.org/x/oauth2"
@@ -34,19 +35,24 @@ func Exec() {
 
 	fmt.Println(len(pulls))
 
-	for _, pull := range pulls {
-		fmt.Println(pull.GetTitle())
-		fmt.Println(pull.GetUser().GetLogin())
-
-		// Skip not merged pull requests
-		if pull.GetMergedAt().IsZero() {
-			fmt.Print("Not Merged!\n\n")
-			continue
+	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02"))
+	pullRequestBody := ""
+	for _, commitID := range diffCommitIDs {
+		for _, pull := range pulls {
+			if commitID == pull.GetMergeCommitSHA() {
+				pullRequestBody += fmt.Sprintf("* [ ] %s (#%d) @%s\n", pull.GetTitle(), pull.GetNumber(), pull.GetUser().GetLogin())
+			}
 		}
-		fmt.Println(pull.GetMergedAt())
-		fmt.Println(pull.GetMergeCommitSHA())
-		fmt.Println()
 	}
+
+	fmt.Println(pullRequestBody)
+
+	newPullRequest, err := createPullRequest(pullRequestTitle, pullRequestBody)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	fmt.Printf("Created %s", newPullRequest.GetURL())
 }
 
 // Fetch the difference of commit IDs between develop and main
@@ -111,4 +117,15 @@ func fetchPullRequests(limit int) []*github.PullRequest {
 	}
 
 	return pullRequestsList
+}
+
+func createPullRequest(title string, body string) (*github.PullRequest, error) {
+	newPullRequest, _, err := githubClient.PullRequests.Create(ctx, params.RepositoryOwner, params.RepositoryName, &github.NewPullRequest{
+		Title: &title,
+		Body:  &body,
+		Base:  &params.DevelopmentBranchName,
+		Head:  &params.ProductionBranchName,
+	})
+
+	return newPullRequest, err
 }
