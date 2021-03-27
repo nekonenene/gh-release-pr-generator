@@ -41,11 +41,12 @@ gh-release-pr-generator --help
 | Parameter | Description | Required? |
 |:---:|:---:|:---:|
 |-token| GitHub API Token | YES |
-|-repo-owner| Repository Owner Name | YES |
-|-repo-name| Repository Name | YES |
-|-prod-branch| Production Branch Name (default: `main`) |  |
-|-dev-branch| Development Branch Name (default: `develop`) |  |
-|-template-path| PATH of the [Template File](#template-file) |  |
+|-repo-owner| Repository owner name | YES |
+|-repo-name| Repository name | YES |
+|-prod-branch| Production branch name (default: `main`) |  |
+|-dev-branch| Development branch name (default: `develop`) |  |
+|-template-path| PATH of the [template file](#template-file) |  |
+|-limit| Limit number of fetching pull requests (default: `100`) |  |
 
 ### Template File
 
