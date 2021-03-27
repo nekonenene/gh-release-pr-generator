@@ -16,12 +16,18 @@ func Exec() {
 		log.Fatal(err)
 	}
 
+	// Exit because GitHub API would refuse to create new pull request when no differences between branches
+	if len(diffCommitIDs) == 0 {
+		fmt.Printf("No differences between %s and %s branches\n", params.DevelopmentBranchName, params.ProductionBranchName)
+		return
+	}
+
 	pulls, err := FetchPullRequests(FetchPullRequestsLimitDefault)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02"))
+	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02 15:04"))
 	pullRequestBody := "# Pull Requests\n\n"
 	for _, commitID := range diffCommitIDs {
 		for _, pull := range pulls {

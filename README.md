@@ -5,10 +5,18 @@ This CLI app supports you to create a **release pull request**.
 
 ## Usage
 
-### 1. Download the binary file
+### 1. Install
+
+Go 1.16+:
 
 ```sh
 go install github.com/nekonenene/gh-release-pr-generator@latest
+```
+
+Otherwise:
+
+```sh
+go get github.com/nekonenene/gh-release-pr-generator@latest
 ```
 
 ### 2. Get GitHub API Token
