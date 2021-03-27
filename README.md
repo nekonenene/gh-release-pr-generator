@@ -86,6 +86,7 @@ Release {{ .Year }}-{{ .Month }}-{{ .Date }} {{ .Hour }}:{{ .Minute }}
 | MinuteShort | Current Minute (ex. `4`) |
 | Second | Current Second (ex. `05`) |
 | SecondShort | Current Second (ex. `5`) |
+| Time | Current [Time](https://golang.org/pkg/time/#Time) |
 | Pulls | [Pull Requests](https://github.com/google/go-github/blob/master/github/pulls.go) Array |
 
 
