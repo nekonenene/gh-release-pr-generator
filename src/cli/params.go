@@ -11,6 +11,7 @@ type parameters struct {
 	RepositoryName        string
 	ProductionBranchName  string
 	DevelopmentBranchName string
+	TemplatePath          string
 }
 
 var params parameters
@@ -19,8 +20,9 @@ func ParseParameters() {
 	flag.StringVar(&params.GitHubAPIToken, "token", "", "[Required] GitHub API Token")
 	flag.StringVar(&params.RepositoryOwner, "repo-owner", "", "[Required] Repository owner")
 	flag.StringVar(&params.RepositoryName, "repo-name", "", "[Required] Repository name")
-	flag.StringVar(&params.ProductionBranchName, "prod-branch", ProductionBranchNameDefault, "[Opiton] production branch name (default: main)")
-	flag.StringVar(&params.DevelopmentBranchName, "dev-branch", DevelopmentBranchNameDefault, "[Opiton] development branch name (default: develop)")
+	flag.StringVar(&params.ProductionBranchName, "prod-branch", ProductionBranchNameDefault, "[Opiton] production branch name")
+	flag.StringVar(&params.DevelopmentBranchName, "dev-branch", DevelopmentBranchNameDefault, "[Opiton] development branch name")
+	flag.StringVar(&params.TemplatePath, "template-path", "", "[Opiton] template path for customizing the title and the body of the release pull request")
 	flag.Parse()
 
 	if params.GitHubAPIToken == "" {
