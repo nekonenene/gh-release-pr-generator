@@ -45,5 +45,5 @@ gh-release-pr-generator --help
 ## Build
 
 ```sh
-go build -o bin/gh-release-pr-generator
+make build
 ```
