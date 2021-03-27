@@ -36,7 +36,7 @@ Example:
 gh-release-pr-generator --token 123456789abcd123456789abcd123456789abcd --repo-owner nekonenene --repo-name my-repository-name --dev-branch staging --prod-branch production
 ```
 
-You can see all parameters:
+\[Note\] You can see all parameters:
 
 ```sh
 gh-release-pr-generator --help
