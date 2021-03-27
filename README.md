@@ -43,6 +43,32 @@ gh-release-pr-generator --help
 ```
 
 
+## GitHub Actions
+
+The following is an example of the config file for [GitHub Actions](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions).
+
+```yml
+name: Generate Release Pull Request
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  gh-release-pr-generator:
+    name: gh-release-pr-generator
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+        with:
+          go-version: ^1.16.2
+      - name: Install gh-release-pr-generator
+        run: go install github.com/nekonenene/gh-release-pr-generator@latest
+      - name: Run gh-release-pr-generator
+        run: gh-release-pr-generator --token ${{ secrets.GITHUB_TOKEN }} --repo-owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }} --dev-branch develop --prod-branch main
+```
+
+
 ## Build
 
 ```sh
