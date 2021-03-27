@@ -23,7 +23,7 @@ func Exec() {
 		return
 	}
 
-	closedPulls, err := FetchClosedPullRequests(FetchPullRequestsLimitDefault)
+	closedPulls, err := FetchClosedPullRequests(params.FetchPullRequestsLimit)
 	if err != nil {
 		log.Fatal(err)
 	}
