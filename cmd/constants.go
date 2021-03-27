@@ -1,4 +1,4 @@
-package cli
+package cmd
 
 const (
 	ProductionBranchNameDefault   = "main"
