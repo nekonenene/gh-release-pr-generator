@@ -9,6 +9,8 @@ jobs:
     runs-on: ubuntu-20.04
     steps:
       - uses: actions/checkout@v2
+        with:
+          fetch-depth: 0 # Fetch all commits and tags (Ref: https://github.com/actions/checkout#usage)
       - name: Install go for generating bin file
         uses: actions/setup-go@v2
         with:
