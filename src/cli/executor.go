@@ -27,7 +27,7 @@ func Exec() {
 		log.Fatal(err)
 	}
 
-	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02"))
+	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02 15:04"))
 	pullRequestBody := "# Pull Requests\n\n"
 	for _, commitID := range diffCommitIDs {
 		for _, pull := range pulls {
