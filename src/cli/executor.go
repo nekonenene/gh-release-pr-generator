@@ -3,7 +3,8 @@ package cli
 import (
 	"fmt"
 	"log"
-	"time"
+
+	"github.com/google/go-github/v34/github"
 )
 
 // ENTRY POINT of this package
@@ -22,19 +23,24 @@ func Exec() {
 		return
 	}
 
-	pulls, err := FetchPullRequests(FetchPullRequestsLimitDefault)
+	closedPulls, err := FetchClosedPullRequests(FetchPullRequestsLimitDefault)
 	if err != nil {
 		log.Fatal(err)
 	}
 
-	pullRequestTitle := fmt.Sprintf("Release %s", time.Now().Format("2006-01-02 15:04"))
-	pullRequestBody := "# Pull Requests\n\n"
+	// Select pull requests which has not yet been merged into the main branch from closed ones
+	var taegtPulls []*github.PullRequest
 	for _, commitID := range diffCommitIDs {
-		for _, pull := range pulls {
+		for _, pull := range closedPulls {
 			if commitID == pull.GetMergeCommitSHA() {
-				pullRequestBody += fmt.Sprintf("* %s (#%d) @%s\n", pull.GetTitle(), pull.GetNumber(), pull.GetUser().GetLogin())
+				taegtPulls = append(taegtPulls, pull)
 			}
 		}
+	}
+
+	pullRequestTitle, pullRequestBody, err := ConstructPullRequest(taegtPulls)
+	if err != nil {
+		log.Fatal(err)
 	}
 
 	fmt.Println("[Title]")
