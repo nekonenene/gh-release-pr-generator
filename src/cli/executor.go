@@ -16,6 +16,11 @@ func Exec() {
 		log.Fatal(err)
 	}
 
+	if len(diffCommitIDs) == 0 {
+		fmt.Printf("No differences between %s and %s branches\n", params.DevelopmentBranchName, params.ProductionBranchName)
+		return
+	}
+
 	pulls, err := FetchPullRequests(FetchPullRequestsLimitDefault)
 	if err != nil {
 		log.Fatal(err)
