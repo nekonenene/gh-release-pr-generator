@@ -1,7 +1,7 @@
 package main
 
-import "github.com/nekonenene/gh-release-pr-generator/src/cli"
+import "github.com/nekonenene/gh-release-pr-generator/cmd"
 
 func main() {
-	cli.Exec()
+	cmd.Exec()
 }
