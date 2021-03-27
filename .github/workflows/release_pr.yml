@@ -1,0 +1,16 @@
+name: Generate Release Pull Request
+on:
+  push:
+    branches:
+      - develop
+jobs:
+  gh-release-pr-generator:
+    name: gh-release-pr-generator
+    runs-on: ubuntu-20.04
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-go@v2
+      - name: Install gh-release-pr-generator
+        run: go install github.com/nekonenene/gh-release-pr-generator@latest
+      - name: Run gh-release-pr-generator
+        run: gh-release-pr-generator --token ${{ secrets.GITHUB_TOKEN }} --repo-owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }} --dev-branch develop --prod-branch main
