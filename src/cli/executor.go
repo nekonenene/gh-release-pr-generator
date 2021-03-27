@@ -38,7 +38,7 @@ func Exec() {
 		}
 	}
 
-	pullRequestTitle, pullRequestBody, err := ConstructPullRequest(taegtPulls)
+	pullRequestTitle, pullRequestBody, err := ConstructTitleAndBody(taegtPulls)
 	if err != nil {
 		log.Fatal(err)
 	}

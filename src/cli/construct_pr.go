@@ -2,14 +2,17 @@ package cli
 
 import (
 	"bytes"
+	"io/ioutil"
+	"os"
 	"strconv"
+	"strings"
 	"text/template"
 	"time"
 
 	"github.com/google/go-github/v34/github"
 )
 
-type templateParams struct {
+type templateParameters struct {
 	Year         string
 	YearShort    string
 	Month        string
@@ -35,35 +38,42 @@ const (
 {{- end }}`
 )
 
-func ConstructPullRequest(pulls []*github.PullRequest) (string, string, error) {
+func ConstructTitleAndBody(pulls []*github.PullRequest) (string, string, error) {
 	var title, body string
 	var titleTemplateString, bodyTemplateString string
-	var params templateParams
+	var templateParams templateParameters
 
-	params = setTimeParams(params)
-	params.Pulls = pulls
+	templateParams = setTimeParams(templateParams)
+	templateParams.Pulls = pulls
 
-	titleTemplateString = titleTemplateStringDefault
+	titleTemplateString, bodyTemplateString, err := readTemplateFile()
+	if err != nil {
+		return title, body, err
+	}
+	if titleTemplateString == "" {
+		titleTemplateString = titleTemplateStringDefault
+	}
+	if bodyTemplateString == "" {
+		bodyTemplateString = bodyTemplateStringDefault
+	}
 
 	titleBuffer := new(bytes.Buffer)
 	titleTemplate, err := template.New("title").Parse(titleTemplateString)
 	if err != nil {
 		return title, body, err
 	}
-	err = titleTemplate.Execute(titleBuffer, params)
+	err = titleTemplate.Execute(titleBuffer, templateParams)
 	if err != nil {
 		return title, body, err
 	}
 	title = titleBuffer.String()
-
-	bodyTemplateString = bodyTemplateStringDefault
 
 	bodyBuffer := new(bytes.Buffer)
 	bodyTemplate, err := template.New("body").Parse(bodyTemplateString)
 	if err != nil {
 		return title, body, err
 	}
-	err = bodyTemplate.Execute(bodyBuffer, params)
+	err = bodyTemplate.Execute(bodyBuffer, templateParams)
 	if err != nil {
 		return title, body, err
 	}
@@ -72,7 +82,33 @@ func ConstructPullRequest(pulls []*github.PullRequest) (string, string, error) {
 	return title, body, nil
 }
 
-func setTimeParams(params templateParams) templateParams {
+func readTemplateFile() (string, string, error) {
+	var title, body string
+
+	if params.TemplatePath == "" {
+		return title, body, nil
+	}
+
+	file, err := os.Open(params.TemplatePath)
+	if err != nil {
+		return title, body, err
+	}
+	defer file.Close()
+
+	buf, err := ioutil.ReadAll(file)
+	if err != nil {
+		return title, body, err
+	}
+
+	fileString := string(buf)
+	splitedString := strings.Split(fileString, "\n")
+	title = splitedString[0]
+	body = strings.Join(splitedString[1:], "\n")
+
+	return title, body, nil
+}
+
+func setTimeParams(params templateParameters) templateParameters {
 	currentTime := time.Now()
 
 	params.Year = currentTime.Format("2006")
