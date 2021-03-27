@@ -51,6 +51,7 @@ gh-release-pr-generator --help
 |-dev-branch| Development branch name (default: `develop`) |  |
 |-template-path| PATH of the [template file](#template-file) |  |
 |-limit| Limit number of fetching pull requests (default: `100`) |  |
+|-enterprise-url| URL of GitHub Enterprise (ex. https://github.your.domain ) |  |
 
 ### Template File
 
