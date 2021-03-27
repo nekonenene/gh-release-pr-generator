@@ -27,14 +27,26 @@ type templateParams struct {
 	Pulls        []*github.PullRequest
 }
 
+const (
+	titleTemplateStringDefault = "Release {{ .Year }}-{{ .Month }}-{{ .Date }} {{ .Hour }}:{{ .Minute }}"
+	bodyTemplateStringDefault  = `# Pull Requests
+{{ range $i, $pull := .Pulls }}
+* {{ $pull.Title }} (#{{ $pull.Number }}) @{{ $pull.User.Login }}
+{{- end }}`
+)
+
 func ConstructPullRequest(pulls []*github.PullRequest) (string, string, error) {
 	var title, body string
+	var titleTemplateString, bodyTemplateString string
 	var params templateParams
+
 	params = setTimeParams(params)
 	params.Pulls = pulls
 
+	titleTemplateString = titleTemplateStringDefault
+
 	titleBuffer := new(bytes.Buffer)
-	titleTemplate, err := template.New("title").Parse("Release {{ .Year }}-{{ .Month }}-{{ .Date }} {{ .Hour }}:{{ .Minute }}")
+	titleTemplate, err := template.New("title").Parse(titleTemplateString)
 	if err != nil {
 		return title, body, err
 	}
@@ -44,10 +56,7 @@ func ConstructPullRequest(pulls []*github.PullRequest) (string, string, error) {
 	}
 	title = titleBuffer.String()
 
-	bodyTemplateString := `# Pull Requests
-{{ range $i, $pull := .Pulls }}
-* {{ $pull.Title }} (#{{ $pull.Number }}) @{{ $pull.User.Login }}
-{{- end }}`
+	bodyTemplateString = bodyTemplateStringDefault
 
 	bodyBuffer := new(bytes.Buffer)
 	bodyTemplate, err := template.New("body").Parse(bodyTemplateString)
