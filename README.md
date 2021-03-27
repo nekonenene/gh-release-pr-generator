@@ -57,6 +57,8 @@ jobs:
   gh-release-pr-generator:
     name: gh-release-pr-generator
     runs-on: ubuntu-20.04
+    env:
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
