@@ -51,6 +51,7 @@ gh-release-pr-generator --help
 |-dev-branch| Development branch name (default: `develop`) |  |
 |-template-path| PATH of the [template file](#template-file) |  |
 |-limit| Limit number of fetching pull requests (default: `100`) |  |
+|-enterprise-url| URL of GitHub Enterprise (ex. https://github.your.domain ) |  |
 
 ### Template File
 
@@ -86,6 +87,7 @@ Release {{ .Year }}-{{ .Month }}-{{ .Date }} {{ .Hour }}:{{ .Minute }}
 | MinuteShort | Current Minute (ex. `4`) |
 | Second | Current Second (ex. `05`) |
 | SecondShort | Current Second (ex. `5`) |
+| Time | Current [Time](https://golang.org/pkg/time/#Time) |
 | Pulls | [Pull Requests](https://github.com/google/go-github/blob/master/github/pulls.go) Array |
 
 

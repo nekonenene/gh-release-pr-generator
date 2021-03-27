@@ -13,11 +13,22 @@ var (
 )
 
 // init ctx and githubClient
-func InitContextAndClient() {
+func InitContextAndGitHubClient() error {
 	ctx = context.Background()
 	tokenSource := oauth2.StaticTokenSource(&oauth2.Token{AccessToken: params.GitHubAPIToken})
 	httpClient := oauth2.NewClient(ctx, tokenSource)
-	githubClient = github.NewClient(httpClient)
+
+	if params.EnterpriseURL == "" {
+		githubClient = github.NewClient(httpClient)
+	} else {
+		var err error
+		githubClient, err = github.NewEnterpriseClient(params.EnterpriseURL, params.EnterpriseURL, httpClient)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
 }
 
 // Fetch the difference of commit IDs between develop and main
