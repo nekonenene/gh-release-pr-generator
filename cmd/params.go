@@ -13,6 +13,7 @@ type parameters struct {
 	DevelopmentBranchName  string
 	TemplatePath           string
 	FetchPullRequestsLimit int
+	EnterpriseURL          string
 }
 
 var params parameters
@@ -25,6 +26,7 @@ func ParseParameters() {
 	flag.StringVar(&params.DevelopmentBranchName, "dev-branch", DevelopmentBranchNameDefault, "[Opiton] development branch name")
 	flag.StringVar(&params.TemplatePath, "template-path", "", "[Opiton] template path for customizing the title and the body of the release pull request")
 	flag.IntVar(&params.FetchPullRequestsLimit, "limit", FetchPullRequestsLimitDefault, "[Opiton] limit number of fetching pull requests")
+	flag.StringVar(&params.EnterpriseURL, "enterprise-url", "", "[Opiton] URL of GitHub Enterprise (ex. https://github.your.domain )")
 	flag.Parse()
 
 	if params.GitHubAPIToken == "" {

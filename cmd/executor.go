@@ -10,7 +10,11 @@ import (
 // ENTRY POINT of this package
 func Exec() {
 	ParseParameters()
-	InitContextAndClient()
+
+	err := InitContextAndGitHubClient()
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	diffCommitIDs, err := FetchDiffCommitIDs()
 	if err != nil {
