@@ -2,6 +2,7 @@
 
 This CLI app supports you to create a **release pull request**.
 
+It fetches pull requests which merged into the development branch, and creates a pull request would merge into the production banch. It will be convenient if your project follows git-flow.
 
 ## Usage
 
