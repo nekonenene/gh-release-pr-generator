@@ -1,2 +1,2 @@
 build:
-	go build -o bin/gh-release-pr-generator
+	go build -ldflags "-w" -o bin/gh-release-pr-generator

@@ -2,7 +2,7 @@
 
 This CLI app supports you to create a **release pull request**.
 
-It fetches pull requests which merged into the development branch, and creates a pull request would merge into the production banch. It will be convenient if your project follows git-flow.
+It fetches pull requests which merged into the development branch, and generates new pull request would merge into the production branch. If the pull request already exists, it updates the title and the body of that. This app will be convenient if your project follows git-flow.
 
 ## Usage
 
@@ -57,6 +57,8 @@ jobs:
   gh-release-pr-generator:
     name: gh-release-pr-generator
     runs-on: ubuntu-20.04
+    env:
+      TZ: Asia/Tokyo
     steps:
       - uses: actions/checkout@v2
       - uses: actions/setup-go@v2
