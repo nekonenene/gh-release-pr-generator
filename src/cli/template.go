@@ -13,6 +13,7 @@ import (
 )
 
 type templateParameters struct {
+	Time         time.Time
 	Year         string
 	YearShort    string
 	Month        string
@@ -111,6 +112,7 @@ func readTemplateFile() (string, string, error) {
 func setTimeParams(params templateParameters) templateParameters {
 	currentTime := time.Now()
 
+	params.Time = currentTime
 	params.Year = currentTime.Format("2006")
 	params.YearShort = currentTime.Format("06")
 	params.Month = currentTime.Format("01")
