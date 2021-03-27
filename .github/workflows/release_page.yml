@@ -16,6 +16,10 @@ jobs:
       - uses: actions/setup-node@v2
         with:
           node-version: 14
+      - name: Set commiter for release-it
+        run: |
+          git config --global user.name release-it
+          git config --global user.email ci@example.com
       - name: Install release-it
         run: npm install -g release-it
       - name: Run release-it
