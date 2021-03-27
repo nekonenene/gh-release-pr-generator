@@ -4,9 +4,8 @@ This CLI app supports you to create a **release pull request**.
 
 It fetches pull requests which merged into the development branch, and generates new pull request would merge into the production branch. If the pull request already exists, it updates the title and the body of that. This app will be convenient if your project follows git-flow.
 
-## Usage
 
-### 1. Install
+## Installation
 
 Go 1.16+:
 
@@ -20,30 +19,72 @@ Otherwise:
 go get github.com/nekonenene/gh-release-pr-generator@latest
 ```
 
-### 2. Get GitHub API Token
 
-See [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token)
+## Usage
 
-### 3. Run
+You need to get GitHub API Token, please see [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
 
-```sh
-gh-release-pr-generator --token <YOUR_GITHUB_TOKEN> --repo-owner <REPOSITORY_OWNER_NAME> --repo-name <REPOSITORY_NAME> --dev-branch <DEVELOPMENT_BRANCH_NAME> --prod-branch <PRODUCTION_BRANCH_NAME>
-```
-
-Example:
+### Example
 
 ```sh
-gh-release-pr-generator --token 123456789abcd123456789abcd123456789abcd --repo-owner nekonenene --repo-name my-repository-name --dev-branch staging --prod-branch production
+gh-release-pr-generator --token 123456789abcd123456789abcd --repo-owner nekonenene --repo-name my-repository-name --dev-branch staging --prod-branch production
 ```
 
-\[Note\] You can see all parameters:
+### Parameters
+
+You can see all parameters:
 
 ```sh
 gh-release-pr-generator --help
 ```
 
+| Parameter | Description | Required? |
+|:---:|:---:|:---:|
+|-token| GitHub API Token | YES |
+|-repo-owner| Repository Owner Name | YES |
+|-repo-name| Repository Name | YES |
+|-prod-branch| Production Branch Name (default: `main`) |  |
+|-dev-branch| Development Branch Name (default: `develop`) |  |
+|-template-path| PATH of the [Template File](#template-file) |  |
 
-## GitHub Actions
+### Template File
+
+You can customize the title and the body of the release pull request. Create a template file and specific that with `-template-path` option.
+
+The first line of the template will be the title, and the rest will be the body.
+
+#### Example
+
+```
+Release {{ .Year }}-{{ .Month }}-{{ .Date }} {{ .Hour }}:{{ .Minute }}
+# Pull Requests
+{{ range $i, $pull := .Pulls }}
+* {{ $pull.Title }} (#{{ $pull.Number }}) @{{ $pull.User.Login }}
+{{- end }}
+```
+
+#### Parameters for Template File
+
+| Paramter | Description |
+|:---:|:---:|
+| Year | Current Year (ex. `2006`) |
+| YearShort | Current Year (ex. `06`) |
+| Month | Current Month (ex. `01`) |
+| MonthShort | Current Month (ex. `1`) |
+| Date | Current Date (ex. `02`) |
+| DateShort | Current Date (ex. `2`) |
+| Weekday | Current Weekday (ex. `Monday`) |
+| WeekdayShort | Current Weekday (ex. `Mon`) |
+| Hour | Current Hour (ex. `03`) |
+| HourShort | Current Hour (ex. `3`) |
+| Minute | Current Minute (ex. `04`) |
+| MinuteShort | Current Minute (ex. `4`) |
+| Second | Current Second (ex. `05`) |
+| SecondShort | Current Second (ex. `5`) |
+| Pulls | [Pull Requests](https://github.com/google/go-github/blob/master/github/pulls.go) Array |
+
+
+### Run with GitHub Actions
 
 The following is an example of the config file for [GitHub Actions](https://docs.github.com/en/actions/reference/workflow-syntax-for-github-actions).
 
@@ -76,3 +117,8 @@ jobs:
 ```sh
 make build
 ```
+
+
+## License
+
+[MIT](https://choosealicense.com/licenses/mit/)

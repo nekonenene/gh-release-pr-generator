@@ -43,7 +43,7 @@ func FetchDiffCommitIDs() ([]string, error) {
 }
 
 // Fetch up to `limit` pull requests sorted by updated desc
-func FetchPullRequests(limit int) ([]*github.PullRequest, error) {
+func FetchClosedPullRequests(limit int) ([]*github.PullRequest, error) {
 	var pullRequestsList []*github.PullRequest
 	pageNum := FirstPageNumberOfGitHubAPI
 
