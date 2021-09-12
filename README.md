@@ -31,7 +31,7 @@ First, you need to get GitHub API Token to control your repository, please see [
 ### Example
 
 ```sh
-gh-release-pr-generator --token 123456789abcd123456789abcd --repo-owner nekonenene --repo-name my-repository-name --dev-branch staging --prod-branch production
+gh-release-pr-generator --token 123456789abcd123456789abcd --repo-owner nekonenene --repo-name my-repository-name --head-branch staging --base-branch production
 ```
 
 ### Parameters
@@ -47,8 +47,8 @@ gh-release-pr-generator --help
 |-token| GitHub API Token | YES |
 |-repo-owner| Repository owner name | YES |
 |-repo-name| Repository name | YES |
-|-prod-branch| Production branch name (default: `main`) |  |
-|-dev-branch| Development branch name (default: `develop`) |  |
+|-base-branch<br>(-prod-branch)| Production branch name (default: `main`) |  |
+|-head-branch<br>(-dev-branch)| Development branch name (default: `develop`) |  |
 |-template-path| PATH of the [template file](#template-file) |  |
 |-limit| Limit number of fetching pull requests (default: `100`) |  |
 |-enterprise-url| URL of GitHub Enterprise (ex. https://github.your.domain ) |  |
