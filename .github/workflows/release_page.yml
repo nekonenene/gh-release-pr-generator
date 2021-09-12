@@ -14,7 +14,7 @@ jobs:
       - name: Install go for generating bin file
         uses: actions/setup-go@v2
         with:
-          go-version: ^1.16.2
+          go-version: ^1.17.1
       - uses: actions/setup-node@v2
         with:
           node-version: 14
