@@ -39,7 +39,7 @@ func FetchDiffCommitIDs() ([]string, error) {
 		ctx,
 		params.RepositoryOwner,
 		params.RepositoryName,
-		params.ProductionBranchName,
+		params.BaseBranchName,
 		params.DevelopmentBranchName,
 	)
 	if err != nil {
@@ -103,7 +103,7 @@ func CreateOrUpdatePullRequest(title string, body string) (*github.PullRequest, 
 
 	releasePullRequests, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
 		Head:  params.DevelopmentBranchName,
-		Base:  params.ProductionBranchName,
+		Base:  params.BaseBranchName,
 		State: "open",
 	})
 	if err != nil {
@@ -124,7 +124,7 @@ func createPullRequest(title string, body string) (*github.PullRequest, error) {
 		Title: &title,
 		Body:  &body,
 		Head:  &params.DevelopmentBranchName,
-		Base:  &params.ProductionBranchName,
+		Base:  &params.BaseBranchName,
 	})
 
 	return newPullRequest, err
