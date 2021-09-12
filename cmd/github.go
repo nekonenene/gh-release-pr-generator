@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/go-github/v34/github"
 	"golang.org/x/oauth2"
@@ -102,7 +103,7 @@ func CreateOrUpdatePullRequest(title string, body string) (*github.PullRequest, 
 	isCreated := false
 
 	releasePullRequests, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
-		Head:  params.DevelopmentBranchName,
+		Head:  fmt.Sprintf("%s:%s", params.RepositoryOwner, params.DevelopmentBranchName),
 		Base:  params.BaseBranchName,
 		State: "open",
 	})
