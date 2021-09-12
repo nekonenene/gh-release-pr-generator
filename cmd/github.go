@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"context"
+	"fmt"
 
 	"github.com/google/go-github/v34/github"
 	"golang.org/x/oauth2"
@@ -39,7 +40,7 @@ func FetchDiffCommitIDs() ([]string, error) {
 		ctx,
 		params.RepositoryOwner,
 		params.RepositoryName,
-		params.ProductionBranchName,
+		params.BaseBranchName,
 		params.DevelopmentBranchName,
 	)
 	if err != nil {
@@ -102,8 +103,8 @@ func CreateOrUpdatePullRequest(title string, body string) (*github.PullRequest, 
 	isCreated := false
 
 	releasePullRequests, _, err := githubClient.PullRequests.List(ctx, params.RepositoryOwner, params.RepositoryName, &github.PullRequestListOptions{
-		Head:  params.DevelopmentBranchName,
-		Base:  params.ProductionBranchName,
+		Head:  fmt.Sprintf("%s:%s", params.RepositoryOwner, params.DevelopmentBranchName),
+		Base:  params.BaseBranchName,
 		State: "open",
 	})
 	if err != nil {
@@ -124,7 +125,7 @@ func createPullRequest(title string, body string) (*github.PullRequest, error) {
 		Title: &title,
 		Body:  &body,
 		Head:  &params.DevelopmentBranchName,
-		Base:  &params.ProductionBranchName,
+		Base:  &params.BaseBranchName,
 	})
 
 	return newPullRequest, err

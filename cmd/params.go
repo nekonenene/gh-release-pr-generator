@@ -9,7 +9,7 @@ type parameters struct {
 	GitHubAPIToken         string
 	RepositoryOwner        string
 	RepositoryName         string
-	ProductionBranchName   string
+	BaseBranchName         string
 	DevelopmentBranchName  string
 	TemplatePath           string
 	FetchPullRequestsLimit int
@@ -22,8 +22,10 @@ func ParseParameters() {
 	flag.StringVar(&params.GitHubAPIToken, "token", "", "[Required] GitHub API Token")
 	flag.StringVar(&params.RepositoryOwner, "repo-owner", "", "[Required] Repository owner")
 	flag.StringVar(&params.RepositoryName, "repo-name", "", "[Required] Repository name")
-	flag.StringVar(&params.ProductionBranchName, "prod-branch", ProductionBranchNameDefault, "[Opiton] production branch name")
-	flag.StringVar(&params.DevelopmentBranchName, "dev-branch", DevelopmentBranchNameDefault, "[Opiton] development branch name")
+	flag.StringVar(&params.BaseBranchName, "base-branch", BaseBranchNameDefault, "[Opiton] base branch name")
+	flag.StringVar(&params.BaseBranchName, "prod-branch", BaseBranchNameDefault, "[Opiton] alias of \"base-branch\"")
+	flag.StringVar(&params.DevelopmentBranchName, "head-branch", DevelopmentBranchNameDefault, "[Opiton] head branch (development branch) name")
+	flag.StringVar(&params.DevelopmentBranchName, "dev-branch", DevelopmentBranchNameDefault, "[Opiton] alias of \"head-branch\"")
 	flag.StringVar(&params.TemplatePath, "template-path", "", "[Opiton] template path for customizing the title and the body of the release pull request")
 	flag.IntVar(&params.FetchPullRequestsLimit, "limit", FetchPullRequestsLimitDefault, "[Opiton] limit number of fetching pull requests")
 	flag.StringVar(&params.EnterpriseURL, "enterprise-url", "", "[Opiton] URL of GitHub Enterprise (ex. https://github.your.domain )")

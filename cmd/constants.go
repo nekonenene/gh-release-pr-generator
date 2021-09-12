@@ -1,7 +1,7 @@
 package cmd
 
 const (
-	ProductionBranchNameDefault   = "main"
+	BaseBranchNameDefault         = "main"
 	DevelopmentBranchNameDefault  = "develop"
 	PerPageDefault                = 100
 	FirstPageNumberOfGitHubAPI    = 1
