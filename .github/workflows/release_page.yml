@@ -6,18 +6,18 @@ on:
 jobs:
   release-it:
     name: release-it
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v3
         with:
           fetch-depth: 0 # Fetch all commits and tags (Ref: https://github.com/actions/checkout#usage)
       - name: Install go for generating bin file
-        uses: actions/setup-go@v2
+        uses: actions/setup-go@v3
         with:
-          go-version: ^1.17.1
-      - uses: actions/setup-node@v2
+          go-version: ^1.19.4
+      - uses: actions/setup-node@v3
         with:
-          node-version: 14
+          node-version: 18
       - name: Set commiter for release-it
         run: |
           git config --global user.name release-it
