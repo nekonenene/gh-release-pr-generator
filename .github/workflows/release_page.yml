@@ -27,4 +27,4 @@ jobs:
       - name: Run release-it
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: release-it --ci --increment minor
+        run: release-it --ci --increment patch
