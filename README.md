@@ -14,13 +14,13 @@ It fetches pull requests which merged into the development branch, and generates
 Go 1.16+:
 
 ```sh
-go install github.com/nekonenene/gh-release-pr-generator@latest
+go install github.com/nekonenene/gh-release-pr-generator@v1
 ```
 
 Otherwise:
 
 ```sh
-go get github.com/nekonenene/gh-release-pr-generator@latest
+go get github.com/nekonenene/gh-release-pr-generator@v1
 ```
 
 
@@ -113,7 +113,7 @@ jobs:
         with:
           go-version: ^1.19.4
       - name: Install gh-release-pr-generator
-        run: go install github.com/nekonenene/gh-release-pr-generator@latest
+        run: go install github.com/nekonenene/gh-release-pr-generator@v1
       - name: Run gh-release-pr-generator
         run: gh-release-pr-generator --token ${{ secrets.GITHUB_TOKEN }} --repo-owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }} --dev-branch develop --prod-branch main
 ```
