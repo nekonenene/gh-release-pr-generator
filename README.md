@@ -11,16 +11,8 @@ It fetches pull requests which merged into the development branch, and generates
 
 ## Installation
 
-Go 1.17+:
-
 ```sh
 go install github.com/nekonenene/gh-release-pr-generator@v1
-```
-
-Otherwise:
-
-```sh
-go get github.com/nekonenene/gh-release-pr-generator@v1
 ```
 
 
