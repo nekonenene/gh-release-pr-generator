@@ -54,6 +54,11 @@ func Exec() {
 	fmt.Println(pullRequestBody)
 	fmt.Println()
 
+	if params.DryRun {
+		fmt.Println("[Dry Run] Exit here without creating or updating a pull request.")
+		return
+	}
+
 	releasePullRequest, isCreated, err := CreateOrUpdatePullRequest(pullRequestTitle, pullRequestBody)
 	if err != nil {
 		log.Fatal(err)
