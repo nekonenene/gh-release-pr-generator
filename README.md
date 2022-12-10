@@ -15,12 +15,6 @@ It fetches pull requests which merged into the development branch, and generates
 go install github.com/nekonenene/gh-release-pr-generator@v1
 ```
 
-Otherwise(Below Go 1.16):
-
-```sh
-go get github.com/nekonenene/gh-release-pr-generator@v1
-```
-
 
 ## Usage
 
