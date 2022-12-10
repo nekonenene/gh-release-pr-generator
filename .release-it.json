@@ -1,6 +1,9 @@
 {
   "hooks": {
     "before:init": [
+      "echo ${version}",
+      "echo ${latestVersion}",
+      "echo ${git.tagName}",
       "go build -ldflags '-w -s -X github.com/nekonenene/gh-release-pr-generator/cmd.Version=${version}' -o bin/gh-release-pr-generator"
     ]
   },
