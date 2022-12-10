@@ -104,14 +104,14 @@ on:
 jobs:
   gh-release-pr-generator:
     name: gh-release-pr-generator
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
     env:
       TZ: Asia/Tokyo
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-go@v2
+      - uses: actions/checkout@v3
+      - uses: actions/setup-go@v3
         with:
-          go-version: ^1.17.1
+          go-version: ^1.19.4
       - name: Install gh-release-pr-generator
         run: go install github.com/nekonenene/gh-release-pr-generator@latest
       - name: Run gh-release-pr-generator
