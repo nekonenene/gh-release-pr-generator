@@ -1,0 +1,22 @@
+{
+  "hooks": {
+    "before:init": [
+      "go build -ldflags '-w -s -X github.com/nekonenene/gh-release-pr-generator/cmd.Version=${version}' -o bin/gh-release-pr-generator"
+    ]
+  },
+  "git": {
+    "commit": false,
+    "tag": true,
+    "push": true,
+    "requireCleanWorkingDir": false
+  },
+  "github": {
+    "release": true,
+    "assets": [
+      "bin/gh-release-pr-generator"
+    ]
+  },
+  "npm": {
+    "publish": false
+  }
+}
