@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/google/go-github/v34/github"
+	"github.com/google/go-github/v48/github"
 )
 
 // ENTRY POINT of this package
