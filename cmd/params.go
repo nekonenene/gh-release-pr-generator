@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"runtime/debug"
 )
 
 type parameters struct {
@@ -21,7 +22,7 @@ type parameters struct {
 }
 
 var params parameters
-var Version = "v1.7.0"
+var Version = "" // Overwrite when building
 
 func ParseParameters() {
 	flag.StringVar(&params.GitHubAPIToken, "token", "", "[Required] GitHub API Token")
@@ -40,7 +41,7 @@ func ParseParameters() {
 	flag.Parse()
 
 	if params.ShowVersion {
-		fmt.Println(Version)
+		fmt.Println(getVersionString())
 		os.Exit(0)
 	}
 	if params.GitHubAPIToken == "" {
@@ -52,4 +53,19 @@ func ParseParameters() {
 	if params.RepositoryName == "" {
 		log.Fatalln("-repo-name is required")
 	}
+}
+
+func getVersionString() string {
+	// For downloading a binary from GitHub Releases
+	if Version != "" {
+		return Version
+	}
+
+	// For `go install`
+	i, ok := debug.ReadBuildInfo()
+	if ok {
+		return i.Main.Version
+	}
+
+	return "Development version"
 }
