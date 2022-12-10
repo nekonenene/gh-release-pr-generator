@@ -1,6 +1,6 @@
 {
   "hooks": {
-    "before:init": [
+    "before:release": [
       "echo ${version}",
       "echo ${latestVersion}",
       "echo ${git.tagName}",
