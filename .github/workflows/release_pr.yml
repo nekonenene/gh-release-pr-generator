@@ -15,6 +15,6 @@ jobs:
         with:
           go-version: ^1.19.4
       - name: Install gh-release-pr-generator
-        run: go install github.com/nekonenene/gh-release-pr-generator@latest
+        run: go install github.com/nekonenene/gh-release-pr-generator@v1
       - name: Run gh-release-pr-generator
         run: gh-release-pr-generator --token ${{ secrets.GITHUB_TOKEN }} --repo-owner ${{ github.repository_owner }} --repo-name ${{ github.event.repository.name }} --dev-branch develop --prod-branch main
