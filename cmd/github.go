@@ -4,7 +4,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/google/go-github/v34/github"
+	"github.com/google/go-github/v48/github"
 	"golang.org/x/oauth2"
 )
 
@@ -35,20 +35,35 @@ func InitContextAndGitHubClient() error {
 // Fetch the difference of commit IDs between develop and main
 func FetchDiffCommitIDs() ([]string, error) {
 	var diffCommitIDs []string
+	pageNum := FirstPageNumberOfGitHubAPI
 
-	comparison, _, err := githubClient.Repositories.CompareCommits(
-		ctx,
-		params.RepositoryOwner,
-		params.RepositoryName,
-		params.BaseBranchName,
-		params.DevelopmentBranchName,
-	)
-	if err != nil {
-		return diffCommitIDs, err
-	}
+	for {
+		perPage := PerPageDefault
 
-	for _, commit := range comparison.Commits {
-		diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
+		comparison, resp, err := githubClient.Repositories.CompareCommits(
+			ctx,
+			params.RepositoryOwner,
+			params.RepositoryName,
+			params.BaseBranchName,
+			params.DevelopmentBranchName,
+			&github.ListOptions{
+				PerPage: perPage,
+				Page:    pageNum,
+			},
+		)
+		if err != nil {
+			return diffCommitIDs, err
+		}
+
+		for _, commit := range comparison.Commits {
+			diffCommitIDs = append(diffCommitIDs, commit.GetSHA())
+		}
+
+		if resp.NextPage == 0 {
+			break
+		} else {
+			pageNum = resp.NextPage
+		}
 	}
 
 	return diffCommitIDs, nil
