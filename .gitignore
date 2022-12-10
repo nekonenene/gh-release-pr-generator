@@ -16,7 +16,7 @@ bin/
 *.out
 
 # Dependency directories (remove the comment below to include it)
-# vendor/
+vendor/
 
 
 ### https://raw.github.com/github/gitignore/218a941be92679ce67d0484547e3e142b2f5f6f0/Global/macOS.gitignore
