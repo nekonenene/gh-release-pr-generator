@@ -3,7 +3,7 @@
 This CLI app supports you to follow **git-flow** and create a **release pull request**.  
 (**Release pull request** means a pull request which the base branch is the release branch like `main`.)
 
-This app fetches pull requests which merged into the development branch, and generates new pull request would merge into the release branch. If the pull request already exists, it updates the title and the body of that. This app will be convenient if your project follows git-flow.
+This app fetches pull requests which merged into the development branch, and generates new pull request would merge into the release branch. If the pull request already exists, it updates the title and the body of that.
 
 <p align="center">
   <img width="80%" alt="Screenshot of the Release Pull Request" src="https://user-images.githubusercontent.com/11713748/112718623-90307480-8f37-11eb-8139-a9bbf9b81ab1.png">
@@ -19,7 +19,8 @@ go install github.com/nekonenene/gh-release-pr-generator@v1
 
 ## Usage
 
-First, you need to get GitHub API Token to control your repository, please see [here](https://docs.github.com/en/github/authenticating-to-github/creating-a-personal-access-token).
+First, you need to get GitHub API Token to control your repository, please see [here](https://docs.github.com/authentication/keeping-your-account-and-data-secure/creating-a-personal-access-token).  
+The token needs the write-access permission of pull requests.
 
 ### Example
 
